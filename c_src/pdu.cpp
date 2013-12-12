@@ -103,14 +103,14 @@ static ERL_NIF_TERM get_content_1(ErlNifEnv *env, int argc, const ERL_NIF_TERM a
     if (argc != 1 || !enif_is_binary(env, argv[0])) {
         return enif_make_badarg(env);
     }
-    if (!enif_inspect_binary(env, argv[0], &buffer)) {
+    if (!enif_inspect_iolist_as_binary(env, argv[0], &buffer)) {
         return enif_make_badarg(env);
     }
     
     // parse the result
     pdu = new CoapPDU(buffer.data, buffer.size);
     if (!pdu->validate()) {
-        delete pdu
+        delete pdu;
         return enif_make_tuple2(env, enif_make_atom(env, "error"), enif_make_string(env, "Invalid PDU", ERL_NIF_LATIN1));
     }
     

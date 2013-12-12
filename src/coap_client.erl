@@ -20,7 +20,7 @@ get(Host, URI) ->
                 {ok, {Address, ?PORT, Packet}} ->
                     io:format("Answer: ~p~n", [Packet]),
                     {ok, Result} = pdu:get_content(Packet),
-                    io:format("~p~n", [Result]);
+                    io:format("~p~n", [erlang:binary_to_list(Result)]);
                 {error, Reason} ->
                     io:format(standard_error, "Unable to open UDP socket: ~p~n", [Reason])
             end,
