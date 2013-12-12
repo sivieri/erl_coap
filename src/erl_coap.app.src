@@ -1,0 +1,6 @@
+{application, erl_coap,
+ [{description, "Erlang CoAP"},
+  {vsn, "0.1.0"},
+  {modules, []},
+  {applications, [kernel, stdlib]}
+ ]}.
