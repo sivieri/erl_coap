@@ -11,22 +11,20 @@ get(Host, URI) ->
     Token = make_token(),
     ID = make_message_id(),
     {ok, PDU} = pdu:make_pdu(0, 1, Token, ID, URI),
-    io:format("PDU: ~p~n", [PDU]),
     {ok, Address} = inet_parse:address(Host),
     case gen_udp:open(?TMP_PORT, [binary, inet, {active, false}]) of
         {ok, Socket} ->
             gen_udp:send(Socket, Address, ?PORT, PDU),
-            case gen_udp:recv(Socket, 0) of
+            Res = case gen_udp:recv(Socket, 0) of
                 {ok, {Address, ?PORT, Packet}} ->
-                    io:format("Answer: ~p~n", [Packet]),
-                    {ok, Result} = pdu:get_content(Packet),
-                    io:format("~p~n", [erlang:binary_to_list(Result)]);
+                    pdu:get_content(Packet);
                 {error, Reason} ->
-                    io:format(standard_error, "Unable to open UDP socket: ~p~n", [Reason])
+                    {error, Reason}
             end,
-            gen_udp:close(Socket);
+            gen_udp:close(Socket),
+            Res;
          {error, Reason} ->
-             io:format(standard_error, "Unable to open UDP socket: ~p~n", [Reason])
+             {error, Reason}
     end.
 
 % Private API
