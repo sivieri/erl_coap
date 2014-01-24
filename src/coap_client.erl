@@ -11,8 +11,8 @@ get(Host, URI) ->
     Token = make_token(),
     ID = make_message_id(),
     {ok, PDU} = pdu:make_pdu(0, 1, Token, ID, URI),
-    {ok, Address} = inet_parse:address(Host),
-    case gen_udp:open(?TMP_PORT, [binary, inet, {active, false}]) of
+    {ok, Address} = inet_parse:ipv6_address(Host),
+    case gen_udp:open(?TMP_PORT, [binary, inet6, {active, false}]) of
         {ok, Socket} ->
             gen_udp:send(Socket, Address, ?PORT, PDU),
             Res = case gen_udp:recv(Socket, 0) of
