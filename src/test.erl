@@ -1,5 +1,5 @@
 -module(test).
--export([get_test/2, get_multiple/2]).
+-export([get_test/2, get_multiple/1]).
 -include("eliot.hrl").
 -define(TESTS, 10000).
 -define(FNAME, "tests.txt").
@@ -15,9 +15,9 @@ get_test(Host, Path) ->
             io:format("CoAP error: ~p~n", Reason)
     end.
 
-get_multiple(Host, Path) ->
+get_multiple([Host, Path]) ->
     Ck = #counter{clock = clocks:start(clock_gettime)},
-    Series = loop(Host, Path, Ck, ?TESTS),
+    Series = loop(erlang:atom_to_list(Host), erlang:atom_to_list(Path), Ck, ?TESTS),
     {ok, Dev} = file:open(?FNAME, [append]),
     io:format(Dev, "~p~n", [Series]),
     file:close(Dev).
